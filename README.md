@@ -1,5 +1,5 @@
 
-## Dependencies to download. Open Visual Studio cd to my-app and type `npm i leaflet react-leaflet`
+### Dependencies to download. Open Visual Studio cd to my-app and type `npm i leaflet react-leaflet`
 
 
 ### How to start. Open Visual Studio cd to my-app and open terminal and type `npm start`
