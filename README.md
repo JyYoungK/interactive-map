@@ -1,8 +1,11 @@
 
-### Dependencies to download. Open Visual Studio cd to my-app and type `npm i leaflet react-leaflet`
+### Dependencies to download. Open Visual Studio cd to my-app and type 
+`npm i leaflet react-leaflet`
+`npm install react-icons`
 
 
-### How to start. Open Visual Studio cd to my-app and open terminal and type `npm start`
+### How to start. Open Visual Studio cd to my-app and open terminal and type 
+`npm start`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
