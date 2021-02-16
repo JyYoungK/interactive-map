@@ -1,6 +1,6 @@
 
 ### Dependencies to download. Open Visual Studio cd to my-app and type 
-`npm i leaflet react-leaflet bootstrap react-bootstrap-validation --save styled-components`
+`npm i react leaflet react-leaflet bootstrap react-bootstrap-validation --save styled-components`
 `npm i --save react-router-dom`
 
 ### How to start. Open Visual Studio cd to my-app and open terminal and type 
