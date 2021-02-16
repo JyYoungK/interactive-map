@@ -3,7 +3,7 @@ import MyMap from "./mapComponent/MyMap";
 
 const Home = ({handleLogout}) => {
     return (
-        <div>
+        <>
             <section className="home">
             <nav>
                 <h2> Welcome</h2>
@@ -11,7 +11,7 @@ const Home = ({handleLogout}) => {
             </nav>
             <MyMap />;
             </section>
-        </div>
+        </>
     );
 };
 
