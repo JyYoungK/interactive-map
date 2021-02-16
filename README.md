@@ -1,9 +1,10 @@
 
 ### Dependencies to download. Open Visual Studio cd to my-app and type 
 `npm i leaflet react-leaflet`
-`npm install react-icons`
-`npm install --save react-router-dom`
-`npm install react-bootstrap-validation --save`
+`npm i react-icons`
+`npm i --save react-router-dom`
+`npm i react-bootstrap-validation --save`
+`npm i styled-components`
 
 ### How to start. Open Visual Studio cd to my-app and open terminal and type 
 `npm start`
