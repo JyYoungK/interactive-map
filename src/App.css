@@ -5,7 +5,7 @@
   font-family: "Nunito", sans-serif;
 }
 
-button {
+.signButton {
   border: none;
   outline: none;
   width: 100%;
@@ -89,34 +89,4 @@ button {
 .login .loginContainer .errorMsg {
   color: yellow;
   font-size: 16px;
-}
-
-.home {
-  width: 100%;
-  min-height: 100vh;
-  background: radial-gradient(
-    ellipse at left bottom,
-    rgba(101, 112, 224) 0%,
-    rgba(101, 112, 224) 59%,
-    rgba(101, 112, 224) 100%
-  );
-}
-
-.home nav {
-  background: #6029e0;
-  width: 100%;
-  padding: 20px 40px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.home nav h2 {
-  color: #fff;
-}
-
-.home nav button {
-  width: 86px;
-  padding: 8px 0;
-  background: #3a2b58;
 }

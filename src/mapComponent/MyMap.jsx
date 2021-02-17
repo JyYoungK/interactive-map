@@ -7,7 +7,6 @@ import "./MyMap.css";
 class MyMap extends Component {
     
     state = { color: "#ffff00" };
-
     countryData = [];
     countryColorData = [];
 
@@ -20,7 +19,6 @@ class MyMap extends Component {
     }
 
     changeCountryColor = (event)=> {
-
 
         if (event.target.options.fillColor === "green") { //Change Color
             this.countryData.push(event.target);
