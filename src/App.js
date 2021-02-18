@@ -1,8 +1,10 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect, createContext} from 'react';
 import fire from './config/fire'
 import "./App.css";
 import Login from './Login';
 import Home from './Home';
+import firebase from 'firebase';
+
 
 const App = () => {
 
@@ -42,6 +44,7 @@ const App = () => {
       });
     };
 
+
   const handleSignUp = () => {
     clearErrors();
     fire
@@ -64,6 +67,28 @@ const App = () => {
     fire.auth().signOut();
   };
 
+  function save () {
+    console.log("Successfully saved data under " + user.uid);
+
+    var database = firebase.database();
+    var usersRef = database.ref("users");
+    var userExists = database.ref("users/" + user.uid);
+
+    userExists.once("value")
+    .then(function(userinDB){
+        if (userinDB.exists()){ //if username exists only create new category, update
+            usersRef.child(user.uid).push({
+                CountryData: "countryData",
+            });
+        }
+        else{
+          usersRef.child(user.uid).push({
+            CountryData: "countryData",
+          });
+        }
+    });
+  }
+
   const authListener = () => {
     fire.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -83,7 +108,7 @@ const App = () => {
   return (
     <div className="App">
       {user ? (
-        <Home handleLogout={handleLogout}/>
+        <Home handleLogout={handleLogout} save={save}/>
       ) : (
         <Login 
           email={email} 

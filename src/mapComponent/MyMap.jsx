@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { Component } from 'react';
 import { MapContainer, GeoJSON,} from "react-leaflet";
 import countries from '../data/countries.json';
 import "leaflet/dist/leaflet.css";
@@ -16,6 +16,10 @@ class MyMap extends Component {
         fillOpacity: 0.5,
         weight: 2, // border thickness
         dashArray: 1, // if you want to make border into dashed line
+    }
+
+    getCountryData (params) {
+        return this.countryData;
     }
 
     changeCountryColor = (event)=> {

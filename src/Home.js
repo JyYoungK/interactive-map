@@ -6,16 +6,12 @@ import Save from './navComponent/Save';
 import Load from './navComponent/Load';
 import Share from './navComponent/Share';
 
-const Home = ({handleLogout}) => {
+const Home = (props) => {
+
+    const {handleLogout, save, countryData, setCountryData} = props;
 
     return (
         <>
-            {/* <section className="home">
-            <nav>
-                <button onClick={handleLogout}>Logout</button>
-            </nav>
-            <MyMap />;
-            </section> */}
             <Router>
             <nav className='navbar'>
                 <Link to='/' className='navbar-logo'>
@@ -29,13 +25,16 @@ const Home = ({handleLogout}) => {
                         Home
                         </Link>
                     </li>
-                    <li className='nav-item'>
+                    {/* <li className='nav-item'>
                         <Link
                         to='/save'
                         className='nav-links'
                         >
                         Save <i className='fas fa-caret-down' />
                         </Link>
+                    </li> */}
+                    <li className='nav-item'>
+                        <button className='logout nav-links' onClick={save}>Save</button>
                     </li>
                     <li className='nav-item'>
                         <Link
