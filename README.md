@@ -1,6 +1,6 @@
 
 ### Dependencies to download. Open Visual Studio cd to my-app and type 
-`npm i react leaflet react-leaflet bootstrap firebase`
+`npm i react leaflet react-leaflet bootstrap firebase react-modal`
 `npm i --save react-router-dom`
 
 ### How to start. Open Visual Studio cd to my-app and open terminal and type 
