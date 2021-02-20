@@ -2,6 +2,8 @@
 ### Dependencies to download. Open Visual Studio cd to my-app and type 
 `npm i react leaflet react-leaflet bootstrap firebase react-modal`
 `npm i --save react-router-dom`
+`firebase init` -- in order to run this you might need to download firebase tools https://firebase.google.com/docs/cli
+and set Fire Storing / Hostage
 
 ### How to start. Open Visual Studio cd to my-app and open terminal and type 
 `npm start`
