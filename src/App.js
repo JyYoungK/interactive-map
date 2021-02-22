@@ -1,19 +1,22 @@
-import React, { useState, useEffect, createContext} from 'react';
+import React, { useState, useEffect} from 'react';
 import fire from './config/fire'
 import "./App.css";
 import Login from './Login';
 import Home from './Home';
 import firebase from 'firebase';
+import { useAuth } from "./auth-context";
+import { features } from "./data/countries.json";
 
-
-const App = () => {
-
-  const [user, setUser] = useState('');
+export default function App (){
+  const { user, setUser, mapTitle, countryData, countries, setCountries, countryISOData, countryColorData } = useAuth();
+  // const [user, setUser] = useState(''); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [hasAccount, setHasAccount] = useState(false);
+  var database = firebase.database();
+
 
   const clearInputs = () => {
     setEmail('');
@@ -67,24 +70,33 @@ const App = () => {
     fire.auth().signOut();
   };
 
-  function save () {
+  const save = () => {
     console.log("Successfully saved data under " + user.uid);
+    // console.log ("Map Name: " + mapTitle);
+    // console.log ("Map Color: " + countryColorData);
+    // console.log ("Map Name: " + countryObjData[1]);
 
-    var database = firebase.database();
     var usersRef = database.ref("users");
-    var userExists = database.ref("users/" + user.uid);
+    var userExists = database.ref("users/User:" + user.uid + "/Map:" + mapTitle);
 
     userExists.once("value")
     .then(function(userinDB){
-        if (userinDB.exists()){ //if username exists only create new category, update
-            usersRef.child(user.uid).push({
-                CountryData: "countryData",
+        for (var i = 0; i < countryISOData.length; i++) {
+          if (userinDB.exists()){ //if a map exists under a username 
+            //1. Choose to update 
+            firebase.database().ref("users/User:" + user.uid + '/Map:' + mapTitle + '/Obj' + i).update({
+              CountryISO: countryISOData[i],
+              CountryColor: countryColorData[i],
+
             });
-        }
-        else{
-          usersRef.child(user.uid).push({
-            CountryData: "countryData",
-          });
+          }
+          else{ //Create a new map under a username
+            usersRef.child("User:" + user.uid).child("Map:" + mapTitle + '/Obj' + i).update({
+              CountryName: countryISOData[i],
+              CountryColor: countryColorData[i],
+
+            });
+          }
         }
     });
   }
@@ -129,4 +141,3 @@ const App = () => {
 
 }
 
-export default App;

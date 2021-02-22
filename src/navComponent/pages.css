@@ -33,7 +33,7 @@
   font-size: 100px;
 }
 
-.share {
+.compare {
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -72,11 +72,6 @@
   cursor: pointer;
   text-decoration: none;
   font-size: 2rem;
-}
-
-.fa-firstdraft {
-  margin-left: 0.5rem;
-  font-size: 1.6rem;
 }
 
 .nav-menu {
@@ -122,7 +117,7 @@
   display: none;
 }
 
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 560px) {
   .NavbarItems {
     position: relative;
   }
@@ -144,7 +139,7 @@
     left: 0;
     opacity: 1;
     transition: all 0.5s ease;
-    z-index: 1;
+    z-index: 2;
   }
 
   .nav-links {
