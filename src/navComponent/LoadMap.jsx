@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import LoadCountries from "../LoadCountries";
 import Map from "./Map";
 
+
 const LoadMap = () => {
+  
   const [countries, setCountries] = useState([]);
 
   const load = () => {
