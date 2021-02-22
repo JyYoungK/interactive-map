@@ -7,14 +7,13 @@ import firebase from 'firebase';
 import { useAuth } from "./auth-context";
 
 export default function App (){
-  const { user, setUser, mapTitle, countryData, countries, setCountries, countryISOData, countryColorData } = useAuth();
+  const { user, setUser, mapTitle, countryISOData, countryColorData, setCountryISOData, setCountryColorData,} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [hasAccount, setHasAccount] = useState(false);
   var database = firebase.database();
-
 
   const clearInputs = () => {
     setEmail('');
@@ -45,7 +44,6 @@ export default function App (){
       });
     };
 
-
   const handleSignUp = () => {
     clearErrors();
     fire
@@ -70,8 +68,6 @@ export default function App (){
 
   const save = () => {
     console.log("Successfully saved data under " + user.uid);
-
-
     var usersRef = database.ref("users");
     var userExists = database.ref("users/User:" + user.uid + "/Map:" + mapTitle);
 
@@ -88,13 +84,28 @@ export default function App (){
           }
           else{ //Create a new map under a username
             usersRef.child("User:" + user.uid).child("Map:" + mapTitle + '/Obj' + i).update({
-              CountryName: countryISOData[i],
+              CountryISO: countryISOData[i],
               CountryColor: countryColorData[i],
 
             });
           }
         }
     });
+  }
+
+  const load = () => {
+    var ref = database.ref("users/User:" + user.uid + "/Map:123");
+    var ccData = [];
+    var ciData = [];
+    ref.on("value", function(objData) {
+      objData.forEach(child =>{
+        ccData.push(child.val().CountryColor.color);
+        ciData.push(child.val().CountryISO.ISO);
+      })
+    });
+
+    setCountryColorData([ccData]);
+    setCountryISOData(ciData);
   }
 
   const authListener = () => {
@@ -116,7 +127,7 @@ export default function App (){
   return (
     <div className="App">
       {user ? (
-        <Home handleLogout={handleLogout} save={save}/>
+        <Home handleLogout={handleLogout} save={save} load={load}/>
       ) : (
         <Login 
           email={email} 
@@ -134,6 +145,5 @@ export default function App (){
 
     </div>
   );
-
 }
 

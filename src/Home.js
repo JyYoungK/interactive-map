@@ -9,9 +9,8 @@ import Modal from 'react-modal';
 
 const Home = (props) => {
     const [listofcountries, setlistofcountries] = useState([]);
-    const [countries, setCountries] = useState([]);
     const { setMapTitle, countryISOData } = useAuth();
-    const {handleLogout, save} = props;
+    const {handleLogout, save, load } = props;
     const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const [LoadModalIsOpen, setLoadModalIsOpen] = useState(false);
     const [CompareModalIsOpen, setCompareModalIsOpen] = useState(false);
@@ -56,7 +55,7 @@ const Home = (props) => {
         }
     };
 
-    function moreThanOneCountry(){
+    function moreThanOneCountry(){ //Save
         if (countryISOData.length >= 1) {
             setSaveModalIsOpen(true);
         }
@@ -65,7 +64,12 @@ const Home = (props) => {
         }
     }
 
-    function moreThanTwoCountries(){
+    function loadCountry(){ //Load
+        setLoadModalIsOpen(true);
+        load();
+    }
+
+    function moreThanTwoCountries(){ //Compare
         if (countryISOData.length >= 2 ) {
             for (var i = 0; i < countryISOData.length - 1; i++) {
                 console.log(countryISOData[i].obj.feature.properties.ADMIN)
@@ -118,7 +122,7 @@ const Home = (props) => {
                         </Modal>
                     </li>
                     <li className='nav-item'>
-                    <button className='logout nav-links' onClick={() => setLoadModalIsOpen(true)}>Load</button>
+                    <button className='logout nav-links' onClick={loadCountry}>Load</button>
                         <Modal isOpen={LoadModalIsOpen} //Modal open depends on setModal
                         ariaHideApp={false} //Hides annoying error
                         onRequestClose={() => setLoadModalIsOpen(false)} //Closes the modal if clicked outside of modal or esc
