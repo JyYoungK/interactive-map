@@ -5,11 +5,9 @@ import Login from './Login';
 import Home from './Home';
 import firebase from 'firebase';
 import { useAuth } from "./auth-context";
-import { features } from "./data/countries.json";
 
 export default function App (){
   const { user, setUser, mapTitle, countryData, countries, setCountries, countryISOData, countryColorData } = useAuth();
-  // const [user, setUser] = useState(''); 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -72,9 +70,7 @@ export default function App (){
 
   const save = () => {
     console.log("Successfully saved data under " + user.uid);
-    // console.log ("Map Name: " + mapTitle);
-    // console.log ("Map Color: " + countryColorData);
-    // console.log ("Map Name: " + countryObjData[1]);
+
 
     var usersRef = database.ref("users");
     var userExists = database.ref("users/User:" + user.uid + "/Map:" + mapTitle);

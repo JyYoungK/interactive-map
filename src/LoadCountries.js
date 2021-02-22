@@ -22,7 +22,6 @@ class LoadCountryTask {
           }
       }
     }
-
     this.setState(features);
   };
 }
