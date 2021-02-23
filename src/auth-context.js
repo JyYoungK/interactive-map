@@ -5,6 +5,7 @@ const AuthContext = createContext({})
 const AuthProvider = (props) => {
     const [user, setUser] = useState('');
     const [mapTitle, setMapTitle] = useState('');
+    const [SelectMapTitle, setSelectMapTitle] = useState([]);
     const [countryISOData, setCountryISOData] = useState([]);
     const [countryColorData, setCountryColorData] = useState([]);
     const [countryColor, setCountryColor] = useState("#ffff00");
@@ -13,7 +14,8 @@ const AuthProvider = (props) => {
         mapTitle, setMapTitle,
         countryISOData, setCountryISOData,
         countryColorData, setCountryColorData,
-        countryColor, setCountryColor
+        countryColor, setCountryColor,
+        SelectMapTitle, setSelectMapTitle
   };
   return <AuthContext.Provider value= {authContextValue} {...props}/>
 };

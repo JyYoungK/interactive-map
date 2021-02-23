@@ -5,9 +5,10 @@ import Login from './Login';
 import Home from './Home';
 import firebase from 'firebase';
 import { useAuth } from "./auth-context";
+import Map from "./navComponent/Map";
 
 export default function App (){
-  const { user, setUser, mapTitle, countryISOData, countryColorData, setCountryISOData, setCountryColorData,} = useAuth();
+  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setCountryISOData, setCountryColorData, SelectMapTitle} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -69,43 +70,56 @@ export default function App (){
   const save = () => {
     console.log("Successfully saved data under " + user.uid);
     var usersRef = database.ref("users");
-    var userExists = database.ref("users/User:" + user.uid + "/Map:" + mapTitle);
+    var userExists = database.ref("users/User:" + user.uid + "/" + mapTitle);
 
     userExists.once("value")
     .then(function(userinDB){
         for (var i = 0; i < countryISOData.length; i++) {
           if (userinDB.exists()){ //if a map exists under a username 
             //1. Choose to update 
-            firebase.database().ref("users/User:" + user.uid + '/Map:' + mapTitle + '/Obj' + i).update({
+            firebase.database().ref("users/User:" + user.uid + '/' + mapTitle + '/Obj' + i).update({
               CountryISO: countryISOData[i],
               CountryColor: countryColorData[i],
-
             });
           }
           else{ //Create a new map under a username
-            usersRef.child("User:" + user.uid).child("Map:" + mapTitle + '/Obj' + i).update({
+            usersRef.child("User:" + user.uid).child(mapTitle + '/Obj' + i).update({
               CountryISO: countryISOData[i],
               CountryColor: countryColorData[i],
-
             });
           }
         }
     });
   }
 
+  const preload = () => {
+    var Dataref = database.ref("users/User:" + user.uid);
+    var nameData = [];
+    Dataref.on("value", function(objData) {
+      objData.forEach((function(child) {
+        nameData.push(child.key)})
+      )
+    });
+    setMapTitle(nameData);
+  }
+
   const load = () => {
-    var ref = database.ref("users/User:" + user.uid + "/Map:123");
+    var Dataref = database.ref("users/User:" + user.uid + "/" + SelectMapTitle);
+    console.log("Selected " + SelectMapTitle)
     var ccData = [];
     var ciData = [];
-    ref.on("value", function(objData) {
-      objData.forEach(child =>{
-        ccData.push(child.val().CountryColor.color);
-        ciData.push(child.val().CountryISO.ISO);
-      })
-    });
-
-    setCountryColorData([ccData]);
-    setCountryISOData(ciData);
+    if (SelectMapTitle.length > 0){
+      Dataref.on("value", function(objData) {
+        objData.forEach(child =>{
+          ccData.push(child.val().CountryColor.color);
+          ciData.push(child.val().CountryISO.ISO);
+        })
+      });
+      console.log(ccData);
+      console.log(ciData);
+      setCountryColorData([ccData]);
+      setCountryISOData(ciData);
+    }
   }
 
   const authListener = () => {
@@ -127,7 +141,7 @@ export default function App (){
   return (
     <div className="App">
       {user ? (
-        <Home handleLogout={handleLogout} save={save} load={load}/>
+        <Home handleLogout={handleLogout} save={save} preload = {preload} load={load}/>
       ) : (
         <Login 
           email={email} 

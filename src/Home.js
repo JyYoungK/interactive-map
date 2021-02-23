@@ -6,11 +6,14 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import LoadMap from './navComponent/LoadMap';
 import Share from './navComponent/Share';
 import Modal from 'react-modal';
+import { Form } from 'semantic-ui-react';
 
 const Home = (props) => {
+    const [map, setMap] = useState('Map1');
+
     const [listofcountries, setlistofcountries] = useState([]);
-    const { setMapTitle, countryISOData } = useAuth();
-    const {handleLogout, save, load } = props;
+    const { mapTitle, setMapTitle, countryISOData, setSelectMapTitle} = useAuth();
+    const {handleLogout, save, preload, load } = props;
     const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const [LoadModalIsOpen, setLoadModalIsOpen] = useState(false);
     const [CompareModalIsOpen, setCompareModalIsOpen] = useState(false);
@@ -64,9 +67,14 @@ const Home = (props) => {
         }
     }
 
-    function loadCountry(){ //Load
+    function saved(){
+        setSaveModalIsOpen(false);
+        save();
+    }
+
+    function loadCountry(){ //Load1
         setLoadModalIsOpen(true);
-        load();
+        preload();
     }
 
     function moreThanTwoCountries(){ //Compare
@@ -81,6 +89,31 @@ const Home = (props) => {
         else{
             alert("Please select at least 2 countries to compare!")
         }
+    }
+
+    function loaded(){
+        setLoadModalIsOpen(false);
+        if (map === 'Map1'){
+            console.log("Map1 selected");
+            setSelectMapTitle(mapTitle[0]);
+        }
+        else if (map === 'Map2'){
+            console.log("Map2 selected");
+            setSelectMapTitle(mapTitle[1]);
+        }
+        else if (map === 'Map3'){
+            console.log("Map3 selected");
+            setSelectMapTitle(mapTitle[2]);
+        }
+        else if (map === 'Map4'){
+            console.log("Map4 selected");
+            setSelectMapTitle(mapTitle[3]);
+        }
+        else{
+            console.log("Map5 selected");
+            setSelectMapTitle(mapTitle[4]);           
+        }
+        load();
     }
 
     function closeComparison(){
@@ -115,7 +148,7 @@ const Home = (props) => {
                                 <p>Name of the map </p>
                                 <input type="text" placeholder="Your map name.." style={{marginTop: "5%", height: "200%"}} onChange={event => setMapTitle(event.target.value)}/>
                                 <div className="saveButtons">
-                                    <button onClick={save}>Save</button> 
+                                    <button onClick={saved}>Save</button> 
                                     <button onClick = {() => setSaveModalIsOpen(false)}> Close </button>
                                 </div>
                             </div>
@@ -131,10 +164,17 @@ const Home = (props) => {
                         >
                             <div className="saveContents">
                                 <h2 style={{margin: "5%"}}> Load </h2>
-                                <p>Name of the map </p>
-                                <p> Search </p>
+                                <p>Your list of maps </p>
+                                <Form.Group inline>
+                                    <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={() => setMap('Map1')}/>
+                                    <Form.Radio label={mapTitle[1]} checked={map === 'Map2'} value="Map2" onClick={() => setMap('Map2')}/>
+                                    <Form.Radio label={mapTitle[2]} checked={map === 'Map3'} value="Map3" onClick={() => setMap('Map3')}/>
+                                    <Form.Radio label={mapTitle[3]} checked={map === 'Map4'} value="Map4" onClick={() => setMap('Map4')}/>
+                                    <Form.Radio label={mapTitle[4]} checked={map === 'Map5'} value="Map5" onClick={() => setMap('Map5')}/>
+                                </Form.Group>
+
                                 <div className="saveButtons">
-                                    <button>Load</button> 
+                                    <button onClick = {loaded}>Load</button> 
                                     <button onClick = {() => setLoadModalIsOpen(false)}> Close </button>
                                 </div>
                             </div>

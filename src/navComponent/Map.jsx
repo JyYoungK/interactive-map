@@ -18,8 +18,7 @@ function useLatestCb(callback) {
 
 const Map = ({countries}) => {
 
-  const { setCountryData, countryISOData, setCountryISOData, countryColorData, setCountryColorData} = useAuth();
-  const [countryModalIsOpen, setCountryModalIsOpen] = useState(false);
+  const { countryISOData, setCountryISOData, countryColorData, setCountryColorData} = useAuth();
   const [color, setColor] = useState("#ffff00");
 
   const countryStyle = {

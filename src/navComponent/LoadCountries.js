@@ -1,12 +1,11 @@
-import { features } from "./data/countries.json";
-import { useAuth } from "./auth-context";
+import { features } from "../data/countries.json";
 
 // const { countryISOData, countryColorData } = useAuth();
 
-class LoadCountryTask {
+class LoadCountries {
   setState = null;
 
-  countries = []
+  countries = ["RUS", "KOR"]
 
   load = (setState) => {
     this.setState = setState;
@@ -29,4 +28,4 @@ class LoadCountryTask {
   };
 }
 
-export default LoadCountryTask;
+export default LoadCountries;
