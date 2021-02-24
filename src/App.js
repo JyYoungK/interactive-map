@@ -4,11 +4,11 @@ import "./App.css";
 import Login from './Login';
 import Home from './Home';
 import firebase from 'firebase';
-import { useAuth } from "./auth-context";
+import { useGlobalState } from "./auth-context";
 import { features } from "./data/countries.json";
 
 export default function App (){
-  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setColoredMap, coloredMap, setCountryISOData, setCountryColorData} = useAuth();
+  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setColoredMap, coloredMap, setCountryISOData, setCountryColorData} = useGlobalState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -121,7 +121,7 @@ export default function App (){
       setColoredMap(countries); 
     }
     load();
-  }, []);
+  }, [coloredMap]);
 
   const preload = () => {
     setMapTitle([]); //Resets so that it doesn't add up.

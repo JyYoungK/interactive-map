@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import './navComponent/pages.css';
 import './Modal.css';
-import { useAuth } from "./auth-context";
+import { useGlobalState } from "./auth-context";
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import LoadMap from './navComponent/LoadMap';
 import Share from './navComponent/Share';
@@ -11,7 +11,7 @@ import { Form } from 'semantic-ui-react';
 const Home = (props) => {
     const [map, setMap] = useState('Map1');
     const [listofcountries, setlistofcountries] = useState([]);
-    const {changeColor, setChangeColor,  mapTitle, setMapTitle, setMyMapTitle, countryISOData} = useAuth();
+    const {changeColor, setChangeColor,  mapTitle, setMapTitle, setMyMapTitle, countryISOData} = useGlobalState();
     const {handleLogout, save, preload, load } = props;
     const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const [LoadModalIsOpen, setLoadModalIsOpen] = useState(false);

@@ -24,6 +24,6 @@ const AuthProvider = (props) => {
   return <AuthContext.Provider value= {authContextValue} {...props}/>
 };
 
-const useAuth = () => React.useContext(AuthContext);
+const useGlobalState = () => React.useContext(AuthContext);
 
-export {AuthProvider, useAuth};
+export {AuthProvider, useGlobalState};

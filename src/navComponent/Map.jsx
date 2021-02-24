@@ -3,7 +3,7 @@ import { MapContainer, GeoJSON,} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./MyMap.css";
 import './pages.css';
-import { useAuth } from "../auth-context";
+import { useGlobalState } from "../auth-context";
 
 function useLatestCb(callback) {
   const callbackRef = useRef(callback);
@@ -18,7 +18,7 @@ function useLatestCb(callback) {
 
 const Map = () => {
 
-  const { myMapTitle, countryISOData, setCountryISOData, changeColor, coloredMap, setColoredMap, countryColorData, setCountryColorData} = useAuth();
+  const { myMapTitle, countryISOData, setCountryISOData, changeColor, coloredMap, setColoredMap, countryColorData, setCountryColorData} = useGlobalState();
 
   useEffect(() => { //the point is to fire off a side effect that should fire after a state value changes (since it depends on that state value).
     setColoredMap(coloredMap)}, [])
