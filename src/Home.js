@@ -90,7 +90,7 @@ const Home = (props) => {
         }
     }
 
-    const loaded = (e) => {
+    function loaded () {
         setLoadModalIsOpen(false);
         if (map === 'Map1'){
             console.log("Map title " + mapTitle[0] + " has been selected");

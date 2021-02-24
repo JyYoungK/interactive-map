@@ -16,9 +16,12 @@ function useLatestCb(callback) {
   return stableCaller;
 }
 
-const Map = ({countries}) => {
+const Map = () => {
 
-  const { myMapTitle, countryISOData, setCountryISOData, changeColor, coloredMap, countryColorData, setCountryColorData} = useAuth();
+  const { myMapTitle, countryISOData, setCountryISOData, changeColor, coloredMap, setColoredMap, countryColorData, setCountryColorData} = useAuth();
+
+  useEffect(() => { //the point is to fire off a side effect that should fire after a state value changes (since it depends on that state value).
+    setColoredMap(coloredMap)}, [])
 
   const countryStyle = {
       fillColor: "green", //country color
@@ -77,6 +80,8 @@ const Map = ({countries}) => {
     layer.on('mouseover', function() { layer.openPopup(); }); //Show country names
     layer.on('mouseout', function() { layer.closePopup(); });
   }
+
+  console.log(coloredMap);
 
   return (
     <div>

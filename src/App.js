@@ -8,13 +8,14 @@ import { useAuth } from "./auth-context";
 import { features } from "./data/countries.json";
 
 export default function App (){
-  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, coloredMap, setColoredMap, setCountryISOData, setCountryColorData} = useAuth();
+  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setColoredMap, coloredMap, setCountryISOData, setCountryColorData} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [hasAccount, setHasAccount] = useState(false);
   var database = firebase.database();
+  const countries = [];
 
   const clearInputs = () => {
     setEmail('');
@@ -105,25 +106,39 @@ export default function App (){
   // }
   
   //After learning
-  useEffect(() => { //the point is to fire off a side effect that should fire after a state value changes (since it depends on that state value).
-  }, [mapTitle], [countryColorData], [countryISOData])
+  // useEffect(() => { //the point is to fire off a side effect that should fire after a state value changes (since it depends on that state value).
+  // }, mapTitle, [])
 
-  const preload = (e) => {
+  useEffect(() => {
+    const load = () => {
+      for (let i = 0; i < features.length; i++) {
+        const country = features[i];
+        if(country.properties.color === undefined){
+          country.properties.color = "green";
+        }
+        countries.push(country)
+      }
+      setColoredMap(countries); 
+    }
+    load();
+  }, []);
+
+  const preload = () => {
     setMapTitle([]); //Resets so that it doesn't add up.
     var Dataref = database.ref("users/User:" + user.uid);
+    let toAdd = []
     Dataref.on("value", function(objData) {
-      let toAdd = []
       objData.forEach((function(child) { //never put setState inside a loop. Also this is same function as
         toAdd.push(child.key)     
       }))
       console.log("Loading following Map Titles: " + toAdd);
-      console.log(toAdd);
       setMapTitle(prevMapTitles => [...prevMapTitles, ...toAdd])
     });
   }
 
   const load = (e) => {
     var Dataref = database.ref("users/User:" + user.uid + "/" + mapTitle[e]);
+    
     Dataref.on("value", function(objData) {
       let ccData = [];
       let ciData = [];
@@ -135,22 +150,20 @@ export default function App (){
        console.log(mapTitle[e] + " colors to show " + ccData);
        setCountryColorData(ccData);
        setCountryISOData(ciData);
-    });
 
-    const countries = [];
+       for (let i = 0; i < features.length; i++) {
+          const country = features[i];
+          country.properties.color = "green";
 
-    for (let i = 0; i < features.length; i++) {
-      const country = features[i];
-      country.properties.color = "green";
-
-      for (let j = 0; j < countryISOData.length; j++){
-        if (country.properties.ISO_A3 === countryISOData[j]){
-          country.properties.color = countryColorData[j];
-        }
+          for (let j = 0; j < ciData.length; j++){
+            if (country.properties.ISO_A3 === ciData[j]){
+              country.properties.color = ccData[j];
+            }
+          }
+          countries.push(country)
       }
-      countries.push(country)
-    }
-    setColoredMap(countries);
+      setColoredMap(countries); 
+    });
   }
 
   const authListener = () => {
