@@ -18,7 +18,7 @@ function useLatestCb(callback) {
 
 const Map = ({countries}) => {
 
-  const { myMapTitle, countryISOData, setCountryISOData, changeColor, countryColorData, setCountryColorData} = useAuth();
+  const { myMapTitle, countryISOData, setCountryISOData, changeColor, coloredMap, countryColorData, setCountryColorData} = useAuth();
 
   const countryStyle = {
       fillColor: "green", //country color
@@ -28,7 +28,7 @@ const Map = ({countries}) => {
       dashArray: 1, // if you want to make border into dashed line
       zIndex: 1,
   }
-  
+
   const changeCountryColor = (event)=> {
         if (event.target.options.fillColor === "green") { //Change Color
             setCountryISOData([... countryISOData , { //Adds the colored country
@@ -62,7 +62,6 @@ const Map = ({countries}) => {
   const latestChangeCountryColor = useLatestCb(changeCountryColor);
 
   const onEachCountry = (country, layer) => {
-    console.log(country.properties.color)
     layer.options.fillColor = country.properties.color;
     const countryName = country.properties.ADMIN;
     const confirmedText = country.properties.confirmedText;
@@ -79,12 +78,11 @@ const Map = ({countries}) => {
     layer.on('mouseout', function() { layer.closePopup(); });
   }
 
-
   return (
     <div>
           <h1 style ={{textAlign: "center"}}> {myMapTitle} </h1>
           <MapContainer style = {{height: "80vh", zIndex : 1}} doubleClickZoom={false} zoom = {2} minZoom = {2} center = {[50, 13]}>{/* Displays the zoom button*/}
-              <GeoJSON style = {countryStyle} data = {countries} onEachFeature={onEachCountry}/>{/*Displays the map */}
+              <GeoJSON style = {countryStyle} onEachFeature={onEachCountry} data = {coloredMap} />{/*Displays the map */}
           </MapContainer>
     </div> 
   );

@@ -126,7 +126,6 @@ const Home = (props) => {
                 <Link to='/' className='navbar-logo'>
                     YorkU MyMap
                 </Link>
-
                 <ul className={'nav-menu active'}>
                     {/* <li className='nav-item'>
                         <Link to='/' className='nav-links'>
@@ -165,7 +164,7 @@ const Home = (props) => {
                                 <h2 style={{margin: "5%"}}> Load </h2>
                                 <p>Your list of maps </p>
                                 <Form.Group inline>
-                                    <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={useEffect(() => { setMap('Map1') }, [])}/>
+                                    <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={() => setMap('Map1')}/>
                                     <Form.Radio label={mapTitle[1]} checked={map === 'Map2'} value="Map2" onClick={() => setMap('Map2')}/>
                                     <Form.Radio label={mapTitle[2]} checked={map === 'Map3'} value="Map3" onClick={() => setMap('Map3')}/>
                                     <Form.Radio label={mapTitle[3]} checked={map === 'Map4'} value="Map4" onClick={() => setMap('Map4')}/>

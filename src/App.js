@@ -5,10 +5,10 @@ import Login from './Login';
 import Home from './Home';
 import firebase from 'firebase';
 import { useAuth } from "./auth-context";
-import Map from "./navComponent/Map";
+import { features } from "./data/countries.json";
 
 export default function App (){
-  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setCountryISOData, setCountryColorData} = useAuth();
+  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, coloredMap, setColoredMap, setCountryISOData, setCountryColorData} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -117,10 +117,10 @@ export default function App (){
         toAdd.push(child.key)     
       }))
       console.log("Loading following Map Titles: " + toAdd);
+      console.log(toAdd);
       setMapTitle(prevMapTitles => [...prevMapTitles, ...toAdd])
     });
   }
-
 
   const load = (e) => {
     var Dataref = database.ref("users/User:" + user.uid + "/" + mapTitle[e]);
@@ -137,6 +137,20 @@ export default function App (){
        setCountryISOData(ciData);
     });
 
+    const countries = [];
+
+    for (let i = 0; i < features.length; i++) {
+      const country = features[i];
+      country.properties.color = "green";
+
+      for (let j = 0; j < countryISOData.length; j++){
+        if (country.properties.ISO_A3 === countryISOData[j]){
+          country.properties.color = countryColorData[j];
+        }
+      }
+      countries.push(country)
+    }
+    setColoredMap(countries);
   }
 
   const authListener = () => {
