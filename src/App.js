@@ -8,7 +8,7 @@ import { useAuth } from "./auth-context";
 import Map from "./navComponent/Map";
 
 export default function App (){
-  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setCountryISOData, setCountryColorData, SelectMapTitle} = useAuth();
+  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setCountryISOData, setCountryColorData} = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -68,7 +68,7 @@ export default function App (){
   };
 
   const save = () => {
-    console.log("Successfully saved data under " + user.uid);
+    console.log("Successfully saved "+ mapTitle +" under " + user.uid);
     var usersRef = database.ref("users");
     var userExists = database.ref("users/User:" + user.uid + "/" + mapTitle);
 
@@ -92,34 +92,51 @@ export default function App (){
     });
   }
 
-  const preload = () => {
+  //Before learning this does not update the state right away
+  // const preload = () => {
+  //   var Dataref = database.ref("users/User:" + user.uid);
+  //   var nameData = [];
+  //   Dataref.on("value", function(objData) {
+  //     objData.forEach((function(child) {
+  //       nameData.push(child.key)})
+  //     )
+  //   });
+  //   setMapTitle(nameData);
+  // }
+  
+  //After learning
+  useEffect(() => { //the point is to fire off a side effect that should fire after a state value changes (since it depends on that state value).
+  }, [mapTitle], [countryColorData], [countryISOData])
+
+  const preload = (e) => {
+    setMapTitle([]); //Resets so that it doesn't add up.
     var Dataref = database.ref("users/User:" + user.uid);
-    var nameData = [];
     Dataref.on("value", function(objData) {
-      objData.forEach((function(child) {
-        nameData.push(child.key)})
-      )
+      let toAdd = []
+      objData.forEach((function(child) { //never put setState inside a loop. Also this is same function as
+        toAdd.push(child.key)     
+      }))
+      console.log("Loading following Map Titles: " + toAdd);
+      setMapTitle(prevMapTitles => [...prevMapTitles, ...toAdd])
     });
-    setMapTitle(nameData);
   }
 
-  const load = () => {
-    var Dataref = database.ref("users/User:" + user.uid + "/" + SelectMapTitle);
-    console.log("Selected " + SelectMapTitle)
-    var ccData = [];
-    var ciData = [];
-    if (SelectMapTitle.length > 0){
-      Dataref.on("value", function(objData) {
-        objData.forEach(child =>{
-          ccData.push(child.val().CountryColor.color);
-          ciData.push(child.val().CountryISO.ISO);
-        })
-      });
-      console.log(ccData);
-      console.log(ciData);
-      setCountryColorData([ccData]);
-      setCountryISOData(ciData);
-    }
+
+  const load = (e) => {
+    var Dataref = database.ref("users/User:" + user.uid + "/" + mapTitle[e]);
+    Dataref.on("value", function(objData) {
+      let ccData = [];
+      let ciData = [];
+      objData.forEach(child =>{ //this but older style.
+         ccData.push(child.val().CountryColor.color);
+         ciData.push(child.val().CountryISO.ISO);
+       })
+       console.log(mapTitle[e] + " ISO to show " + ciData);
+       console.log(mapTitle[e] + " colors to show " + ccData);
+       setCountryColorData(ccData);
+       setCountryISOData(ciData);
+    });
+
   }
 
   const authListener = () => {

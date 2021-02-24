@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import './navComponent/pages.css';
 import './Modal.css';
 import { useAuth } from "./auth-context";
@@ -10,9 +10,8 @@ import { Form } from 'semantic-ui-react';
 
 const Home = (props) => {
     const [map, setMap] = useState('Map1');
-
     const [listofcountries, setlistofcountries] = useState([]);
-    const { mapTitle, setMapTitle, countryISOData, setSelectMapTitle} = useAuth();
+    const {changeColor, setChangeColor,  mapTitle, setMapTitle, setMyMapTitle, countryISOData} = useAuth();
     const {handleLogout, save, preload, load } = props;
     const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const [LoadModalIsOpen, setLoadModalIsOpen] = useState(false);
@@ -72,7 +71,7 @@ const Home = (props) => {
         save();
     }
 
-    function loadCountry(){ //Load1
+    function loadCountry(){ //Load
         setLoadModalIsOpen(true);
         preload();
     }
@@ -91,29 +90,28 @@ const Home = (props) => {
         }
     }
 
-    function loaded(){
+    const loaded = (e) => {
         setLoadModalIsOpen(false);
         if (map === 'Map1'){
-            console.log("Map1 selected");
-            setSelectMapTitle(mapTitle[0]);
+            console.log("Map title " + mapTitle[0] + " has been selected");
+            load(0); setMyMapTitle(mapTitle[0])
         }
         else if (map === 'Map2'){
-            console.log("Map2 selected");
-            setSelectMapTitle(mapTitle[1]);
+            console.log("Map title " + mapTitle[1] + " has been selected");
+            load(1); setMyMapTitle(mapTitle[1])
         }
         else if (map === 'Map3'){
-            console.log("Map3 selected");
-            setSelectMapTitle(mapTitle[2]);
+            console.log("Map title " + mapTitle[2] + " has been selected");
+            load(2); setMyMapTitle(mapTitle[2])
         }
         else if (map === 'Map4'){
-            console.log("Map4 selected");
-            setSelectMapTitle(mapTitle[3]);
+            console.log("Map title " + mapTitle[3] + " has been selected");
+            load(3); setMyMapTitle(mapTitle[3])
         }
         else{
-            console.log("Map5 selected");
-            setSelectMapTitle(mapTitle[4]);           
+            console.log("Map title " + mapTitle[4] + " has been selected");
+            load(4); setMyMapTitle(mapTitle[4])      
         }
-        load();
     }
 
     function closeComparison(){
@@ -136,12 +134,14 @@ const Home = (props) => {
                         </Link>
                     </li> */}
                     <li className='nav-item'>
+                        <input type = "color" value = {changeColor} onChange={e => setChangeColor(e.target.value)}></input>
+                    </li>
+                    <li className='nav-item'>
                         <button className='logout nav-links' onClick={moreThanOneCountry}>Save</button>
                         <Modal isOpen={saveModalIsOpen} //Modal open depends on setModal
                         ariaHideApp={false} //Hides annoying error
                         onRequestClose={() => setSaveModalIsOpen(false)} //Closes the modal if clicked outside of modal or esc
                         style={ modalStyle }
-                        transparent = {false}
                         >
                             <div className="saveContents">
                                 <h2 style={{margin: "5%"}}> Save </h2>
@@ -160,13 +160,12 @@ const Home = (props) => {
                         ariaHideApp={false} //Hides annoying error
                         onRequestClose={() => setLoadModalIsOpen(false)} //Closes the modal if clicked outside of modal or esc
                         style={ modalStyle }
-                        transparent = {false}
                         >
                             <div className="saveContents">
                                 <h2 style={{margin: "5%"}}> Load </h2>
                                 <p>Your list of maps </p>
                                 <Form.Group inline>
-                                    <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={() => setMap('Map1')}/>
+                                    <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={useEffect(() => { setMap('Map1') }, [])}/>
                                     <Form.Radio label={mapTitle[1]} checked={map === 'Map2'} value="Map2" onClick={() => setMap('Map2')}/>
                                     <Form.Radio label={mapTitle[2]} checked={map === 'Map3'} value="Map3" onClick={() => setMap('Map3')}/>
                                     <Form.Radio label={mapTitle[3]} checked={map === 'Map4'} value="Map4" onClick={() => setMap('Map4')}/>
@@ -186,7 +185,6 @@ const Home = (props) => {
                         ariaHideApp={false} //Hides annoying error
                         onRequestClose={() => setCompareModalIsOpen(false)} //Closes the modal if clicked outside of modal or esc
                         style={ modalStyle2 }
-                        transparent = {false}
                         >
                             <div className="compareContents">
                                 <h2 style={{margin: "5%"}}> Compare </h2>

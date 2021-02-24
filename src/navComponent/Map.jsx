@@ -18,8 +18,7 @@ function useLatestCb(callback) {
 
 const Map = ({countries}) => {
 
-  const { countryISOData, setCountryISOData, countryColorData, setCountryColorData} = useAuth();
-  const [color, setColor] = useState("#ffff00");
+  const { myMapTitle, countryISOData, setCountryISOData, changeColor, countryColorData, setCountryColorData} = useAuth();
 
   const countryStyle = {
       fillColor: "green", //country color
@@ -39,7 +38,7 @@ const Map = ({countries}) => {
             event.target.setStyle(
                 { 
                     color: "white", //border color
-                    fillColor: color,
+                    fillColor: changeColor,
                     fillOpacity: 1
                 })
             setCountryColorData("white");
@@ -63,6 +62,7 @@ const Map = ({countries}) => {
   const latestChangeCountryColor = useLatestCb(changeCountryColor);
 
   const onEachCountry = (country, layer) => {
+    console.log(country.properties.color)
     layer.options.fillColor = country.properties.color;
     const countryName = country.properties.ADMIN;
     const confirmedText = country.properties.confirmedText;
@@ -82,11 +82,10 @@ const Map = ({countries}) => {
 
   return (
     <div>
-          <h1 style ={{textAlign: "center"}}> MyMap</h1>
+          <h1 style ={{textAlign: "center"}}> {myMapTitle} </h1>
           <MapContainer style = {{height: "80vh", zIndex : 1}} doubleClickZoom={false} zoom = {2} minZoom = {2} center = {[50, 13]}>{/* Displays the zoom button*/}
               <GeoJSON style = {countryStyle} data = {countries} onEachFeature={onEachCountry}/>{/*Displays the map */}
           </MapContainer>
-          <input type = "color" value = {color} onChange={e => setColor(e.target.value)}></input>
     </div> 
   );
 }

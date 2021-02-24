@@ -15,9 +15,9 @@ const LoadMap = () => {
       }
       for (let j = 0; j < countryISOData.length; j++){
         if (country.properties.ISO_A3 === countryISOData[j]){
-          country.properties.color = "red";
+          country.properties.color = countryColorData[j];
         }
-    }
+      }
       countries.push(country);
     }
   };
