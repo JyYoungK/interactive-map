@@ -3,7 +3,8 @@ import { MapContainer, GeoJSON,} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./MyMap.css";
 import './pages.css';
-import { useGlobalState } from "../auth-context";
+import { useGlobalState } from "../global-context";
+import Modal from 'react-modal';
 
 function useLatestCb(callback) {
   const callbackRef = useRef(callback);
@@ -18,7 +19,28 @@ function useLatestCb(callback) {
 
 const Map = () => {
 
-  const { myMapTitle, countryISOData, setCountryISOData, changeColor, coloredMap, setColoredMap, countryColorData, setCountryColorData} = useGlobalState();
+  const { myMapTitle, countryData, setCountryData, changeColor, coloredMap, setColoredMap, countryText, setCountryText, countryEvent, setCountryEvent} = useGlobalState();
+  const [countryModalIsOpen, setCountryModalIsOpen] = useState(false);
+  const modalStyle = {
+    overlay: {
+        zIndex: 10,
+    },
+    content: {
+        position: 'absolute',
+        top: '35%',
+        left: '30%',
+        right: '30%',
+        bottom: '35%',
+        border: '1px solid #ccc',
+        backgroundColor: 'white',
+        overflow: 'auto',
+        WebkitOverflowScrolling: 'touch',
+        borderRadius: '4px',
+        outline: 'none',
+        padding: '20px',
+        zIndex: 10,
+    }
+  };
 
   useEffect(() => { //the point is to fire off a side effect that should fire after a state value changes (since it depends on that state value).
     setColoredMap(coloredMap)}, [])
@@ -33,62 +55,80 @@ const Map = () => {
   }
 
   const changeCountryColor = (event)=> {
-        if (event.target.options.fillColor === "green") { //Change Color
-            setCountryISOData([... countryISOData , { //Adds the colored country
-              ISO: event.target.feature.properties.ISO_A3,
-            }]);
-            
-            event.target.setStyle(
-                { 
-                    color: "white", //border color
-                    fillColor: changeColor,
-                    fillOpacity: 1
-                })
-            setCountryColorData("white");
-
-            setCountryColorData([... countryColorData , { //Adds the colored country
-              color: event.target.options.fillColor,
-            }]);   
-        }
-        else if (event.target.options.fillColor !== "green") { //Change Color
-           setCountryISOData(countryISOData.filter(item => item.ISO !== event.target.feature.properties.ISO_A3)); //Removes the colored country
-           event.target.setStyle(
-                { 
-                    color: "black", //border color
-                    fillColor: "green",
-                    fillOpacity: 0.5,
-                })
-
-           setCountryColorData(countryColorData.filter(item => item.color !== event.target.options.fillColor)); //Removes the colored country
-        }    
+    setCountryEvent(event)
   }
+
+  function storeCountryData () {
+    console.log(countryEvent)
+
+    setCountryData(countryData.filter(item => item.ISO === countryEvent.target.feature.properties.ISO_A3)); //Removes the colored country
+    countryEvent.target.setStyle({ //Adds color data to be visualized in frontend
+          color: "white", //border color
+          fillColor: changeColor,
+          fillOpacity: 1
+    })
+    
+    setCountryData([... countryData , { //Adds color/iso data to backend
+      ISO: countryEvent.target.feature.properties.ISO_A3,
+      color: changeColor,
+      name : countryEvent.target.feature.properties.ADMIN,
+      arrayIndex : countryEvent.target.feature.properties.arrayIndex,
+      countryText : countryText,
+    }]);   
+  }
+
   const latestChangeCountryColor = useLatestCb(changeCountryColor);
+  function addCountryData() {
+    setCountryModalIsOpen(true);
+  }
 
   const onEachCountry = (country, layer) => {
     layer.options.fillColor = country.properties.color;
     const countryName = country.properties.ADMIN;
-    const confirmedText = country.properties.confirmedText;
-    layer.bindPopup(countryName);
+    const countryText = country.properties.countryText;
+    layer.bindPopup(countryName + " " + countryText);
     // layer.options.fillOpacity = 0.2; // number can go from 0-9
     // If you want to make countries have different colors use below-------------------------
     // const colorIndex = Math.floor(Math.random() * this.color.length);
     // layer.options.fillColor = this.color[colorIndex]; // number can go from 0-9
 
     layer.on({ //Clickable function
-          click: latestChangeCountryColor,
+          click: addCountryData
+    })
+    layer.on({ //Clickable function
+          click: latestChangeCountryColor
     })
     layer.on('mouseover', function() { layer.openPopup(); }); //Show country names
     layer.on('mouseout', function() { layer.closePopup(); });
   }
 
-  console.log(coloredMap);
+  function saveCountryData () {
+    storeCountryData();
+    setCountryModalIsOpen(false);
+  }
+
 
   return (
     <div>
           <h1 style ={{textAlign: "center"}}> {myMapTitle} </h1>
           <MapContainer style = {{height: "80vh", zIndex : 1}} doubleClickZoom={false} zoom = {2} minZoom = {2} center = {[50, 13]}>{/* Displays the zoom button*/}
-              <GeoJSON style = {countryStyle} onEachFeature={onEachCountry} data = {coloredMap} />{/*Displays the map */}
+              <GeoJSON key={JSON.stringify(coloredMap)} style = {countryStyle} onEachFeature={onEachCountry} data = {coloredMap} />{/*Displays the map */}
           </MapContainer>
+          <Modal isOpen={countryModalIsOpen} //Modal open depends on setModal
+                        ariaHideApp={false} //Hides annoying error
+                        onRequestClose={() => setCountryModalIsOpen(false)} //Closes the modal if clicked outside of modal or esc
+                        style={ modalStyle }
+                        >
+                            <div className="saveContents">
+                                <h2>Add information to the map </h2>
+                                <p> Data : </p>
+                                <input type="text" placeholder="empty" style={{marginTop: "5%", height: "200%"}} onChange={event => setCountryText(event.target.value)}/>
+                                <div className="saveButtons">
+                                    <button onClick = {saveCountryData}> Save </button> 
+                                    <button onClick = {() => setCountryModalIsOpen(false)}> Close </button>
+                                </div>
+                            </div>
+          </Modal>
     </div> 
   );
 }

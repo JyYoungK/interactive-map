@@ -4,11 +4,11 @@ import "./App.css";
 import Login from './Login';
 import Home from './Home';
 import firebase from 'firebase';
-import { useGlobalState } from "./auth-context";
+import { useGlobalState } from "./global-context";
 import { features } from "./data/countries.json";
 
 export default function App (){
-  const { user, setUser, mapTitle, setMapTitle, countryISOData, countryColorData, setColoredMap, coloredMap, setCountryISOData, setCountryColorData} = useGlobalState();
+  const { user, setUser, mapTitle, setMapTitle, countryData, setColoredMap, coloredMap, setCountryISOData, setCountryColorData} = useGlobalState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -75,44 +75,34 @@ export default function App (){
 
     userExists.once("value")
     .then(function(userinDB){
-        for (var i = 0; i < countryISOData.length; i++) {
+        for (var i = 0; i < (countryData.length); i++) {
           if (userinDB.exists()){ //if a map exists under a username 
             //1. Choose to update 
             firebase.database().ref("users/User:" + user.uid + '/' + mapTitle + '/Obj' + i).update({
-              CountryISO: countryISOData[i],
-              CountryColor: countryColorData[i],
+              CountryISO: countryData[i].ISO,
+              CountryColor: countryData[i].color,
+              ArrayIndex : countryData[i].arrayIndex,
+              CountryText : countryData[i].countryText,
             });
           }
           else{ //Create a new map under a username
             usersRef.child("User:" + user.uid).child(mapTitle + '/Obj' + i).update({
-              CountryISO: countryISOData[i],
-              CountryColor: countryColorData[i],
+              CountryISO: countryData[i].ISO,
+              CountryColor: countryData[i].color,
+              ArrayIndex : countryData[i].arrayIndex,
+              CountryText : countryData[i].countryText,
             });
           }
         }
     });
   }
 
-  //Before learning this does not update the state right away
-  // const preload = () => {
-  //   var Dataref = database.ref("users/User:" + user.uid);
-  //   var nameData = [];
-  //   Dataref.on("value", function(objData) {
-  //     objData.forEach((function(child) {
-  //       nameData.push(child.key)})
-  //     )
-  //   });
-  //   setMapTitle(nameData);
-  // }
-  
-  //After learning
-  // useEffect(() => { //the point is to fire off a side effect that should fire after a state value changes (since it depends on that state value).
-  // }, mapTitle, [])
-
   useEffect(() => {
     const load = () => {
       for (let i = 0; i < features.length; i++) {
         const country = features[i];
+        country.properties.countryText = "No data";
+        country.properties.arrayIndex = i;
         if(country.properties.color === undefined){
           country.properties.color = "green";
         }
@@ -121,7 +111,7 @@ export default function App (){
       setColoredMap(countries); 
     }
     load();
-  }, [coloredMap]);
+  }, []);
 
   const preload = () => {
     setMapTitle([]); //Resets so that it doesn't add up.
@@ -131,7 +121,8 @@ export default function App (){
       objData.forEach((function(child) { //never put setState inside a loop. Also this is same function as
         toAdd.push(child.key)     
       }))
-      console.log("Loading following Map Titles: " + toAdd);
+      console.log("Loading all the maps ... ");
+      console.log(toAdd);
       setMapTitle(prevMapTitles => [...prevMapTitles, ...toAdd])
     });
   }
@@ -140,24 +131,21 @@ export default function App (){
     var Dataref = database.ref("users/User:" + user.uid + "/" + mapTitle[e]);
     
     Dataref.on("value", function(objData) {
-      let ccData = [];
-      let ciData = [];
+      let cData = [];
+      console.log("Loading a selected map called " + mapTitle[e] + "...");
       objData.forEach(child =>{ //this but older style.
-         ccData.push(child.val().CountryColor.color);
-         ciData.push(child.val().CountryISO.ISO);
+         cData.push(child.val());
+         console.log("Array Index: " + child.val().ArrayIndex + ", ISO: " + child.val().CountryISO + ", Color: " + child.val().CountryColor + ", Text: " + child.val().CountryText);
        })
-       console.log(mapTitle[e] + " ISO to show " + ciData);
-       console.log(mapTitle[e] + " colors to show " + ccData);
-       setCountryColorData(ccData);
-       setCountryISOData(ciData);
 
        for (let i = 0; i < features.length; i++) {
           const country = features[i];
           country.properties.color = "green";
 
-          for (let j = 0; j < ciData.length; j++){
-            if (country.properties.ISO_A3 === ciData[j]){
-              country.properties.color = ccData[j];
+          for (let j = 0; j < cData.length; j++){
+            if (country.properties.ISO_A3 === cData[j].CountryISO){
+              country.properties.color = cData[j].CountryColor;
+              country.properties.countryText = cData[j].CountryText;
             }
           }
           countries.push(country)

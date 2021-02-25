@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import './navComponent/pages.css';
 import './Modal.css';
-import { useGlobalState } from "./auth-context";
+import { useGlobalState } from "./global-context";
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import LoadMap from './navComponent/LoadMap';
 import Share from './navComponent/Share';
@@ -11,7 +11,8 @@ import { Form } from 'semantic-ui-react';
 const Home = (props) => {
     const [map, setMap] = useState('Map1');
     const [listofcountries, setlistofcountries] = useState([]);
-    const {changeColor, setChangeColor,  mapTitle, setMapTitle, setMyMapTitle, countryISOData} = useGlobalState();
+    const [dataOfCountries, setDataOfCountries] = useState([]);
+    const {changeColor, setChangeColor,  mapTitle, setMapTitle, setMyMapTitle, countryData} = useGlobalState();
     const {handleLogout, save, preload, load } = props;
     const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const [LoadModalIsOpen, setLoadModalIsOpen] = useState(false);
@@ -58,12 +59,12 @@ const Home = (props) => {
     };
 
     function moreThanOneCountry(){ //Save
-        if (countryISOData.length >= 1) {
+        // if (countryData.length >= 1) {
             setSaveModalIsOpen(true);
-        }
-        else{
-            alert("In order to save, something has to be changed in the map!")
-        }
+        // }
+        // else{
+        //     alert("In order to save, something has to be changed in the map!")
+        // }
     }
 
     function saved(){
@@ -77,12 +78,14 @@ const Home = (props) => {
     }
 
     function moreThanTwoCountries(){ //Compare
-        if (countryISOData.length >= 2 ) {
-            for (var i = 0; i < countryISOData.length - 1; i++) {
-                console.log(countryISOData[i].obj.feature.properties.ADMIN)
-                listofcountries.push(countryISOData[i].obj.feature.properties.ADMIN + " and ")
+        if (countryData.length >= 2 ) {
+            for (var i = 0; i < countryData.length - 1; i++) {
+                console.log(countryData[i])
+                listofcountries.push(countryData[i].name + " and ")
+                dataOfCountries.push(countryData[i].countryText + " | ")
             }
-            listofcountries.push(countryISOData[countryISOData.length-1].obj.feature.properties.ADMIN)
+            listofcountries.push(countryData[countryData.length-1].name)
+            dataOfCountries.push(countryData[countryData.length-1].countryText)
             setCompareModalIsOpen(true);
         }
         else{
@@ -117,6 +120,7 @@ const Home = (props) => {
     function closeComparison(){
         setCompareModalIsOpen(false)
         setlistofcountries([]);
+        setDataOfCountries([]);
     }
 
     return (
@@ -189,6 +193,7 @@ const Home = (props) => {
                                 <h2 style={{margin: "5%"}}> Compare </h2>
                                 <p>Comparison of the following countries: </p>
                                 <p> {listofcountries} </p>
+                                <p> {dataOfCountries} </p>
                                 <div className="compareButtons">
                                     <button onClick = {closeComparison}> Close </button>
                                 </div>
