@@ -13,7 +13,7 @@ const Home = (props) => {
     const [listofcountries, setlistofcountries] = useState([]);
     const [dataOfCountries, setDataOfCountries] = useState([]);
     const {changeColor, setChangeColor,  mapTitle, setMapTitle, setMyMapTitle, countryData} = useGlobalState();
-    const {handleLogout, save, preload, load } = props;
+    const {handleLogout, save, preload, load, remove } = props;
     const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const [LoadModalIsOpen, setLoadModalIsOpen] = useState(false);
     const [CompareModalIsOpen, setCompareModalIsOpen] = useState(false);
@@ -78,6 +78,8 @@ const Home = (props) => {
     }
 
     function moreThanTwoCountries(){ //Compare
+        console.log(countryData);
+
         if (countryData.length >= 2 ) {
             for (var i = 0; i < countryData.length - 1; i++) {
                 console.log(countryData[i])
@@ -123,6 +125,14 @@ const Home = (props) => {
         setDataOfCountries([]);
     }
 
+    const handleRemoveConfirm = (e) => {
+        const name = e.target.className
+        if (window.confirm("Deleting this will remove all the data inside. Are you sure?")){
+            setMapTitle(mapTitle.filter(item => item !== name));
+            remove(name);
+        }
+    };
+
     return (
         <>
             <Router>
@@ -136,9 +146,9 @@ const Home = (props) => {
                         Home
                         </Link>
                     </li> */}
-                    <li className='nav-item'>
+                    {/* <li className='nav-item'>
                         <input type = "color" value = {changeColor} onChange={e => setChangeColor(e.target.value)}></input>
-                    </li>
+                    </li> */}
                     <li className='nav-item'>
                         <button className='logout nav-links' onClick={moreThanOneCountry}>Save</button>
                         <Modal isOpen={saveModalIsOpen} //Modal open depends on setModal
@@ -151,7 +161,7 @@ const Home = (props) => {
                                 <p>Name of the map </p>
                                 <input type="text" placeholder="Your map name.." style={{marginTop: "5%", height: "200%"}} onChange={event => setMapTitle(event.target.value)}/>
                                 <div className="saveButtons">
-                                    <button onClick={saved}>Save</button> 
+                                    <button onClick={saved}>Save</button>
                                     <button onClick = {() => setSaveModalIsOpen(false)}> Close </button>
                                 </div>
                             </div>
@@ -168,11 +178,26 @@ const Home = (props) => {
                                 <h2 style={{margin: "5%"}}> Load </h2>
                                 <p>Your list of maps </p>
                                 <Form.Group inline>
-                                    <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={() => setMap('Map1')}/>
-                                    <Form.Radio label={mapTitle[1]} checked={map === 'Map2'} value="Map2" onClick={() => setMap('Map2')}/>
-                                    <Form.Radio label={mapTitle[2]} checked={map === 'Map3'} value="Map3" onClick={() => setMap('Map3')}/>
-                                    <Form.Radio label={mapTitle[3]} checked={map === 'Map4'} value="Map4" onClick={() => setMap('Map4')}/>
-                                    <Form.Radio label={mapTitle[4]} checked={map === 'Map5'} value="Map5" onClick={() => setMap('Map5')}/>
+                                    <div style={{display: 'flex'}}>
+                                        <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={() => setMap('Map1')}/>
+                                        <div className={mapTitle[0]} onClick={handleRemoveConfirm}> {'-----x'} </div>
+                                    </div>
+                                    <div style={{display: 'flex'}}>
+                                        <Form.Radio label={mapTitle[1]} checked={map === 'Map2'} value="Map2" onClick={() => setMap('Map2')}/>
+                                        <div className={mapTitle[1]} onClick={handleRemoveConfirm}> {'-----x'} </div>
+                                    </div>
+                                    <div style={{display: 'flex'}}>
+                                        <Form.Radio label={mapTitle[2]} checked={map === 'Map3'} value="Map3" onClick={() => setMap('Map3')}/>
+                                        <div className={mapTitle[2]} onClick={handleRemoveConfirm}> {'-----x'} </div>
+                                    </div>
+                                    <div style={{display: 'flex'}}>
+                                        <Form.Radio label={mapTitle[3]} checked={map === 'Map4'} value="Map4" onClick={() => setMap('Map4')}/>
+                                        <div className={mapTitle[3]} onClick={handleRemoveConfirm}> {'-----x'} </div>
+                                    </div>
+                                    <div style={{display: 'flex'}}>
+                                        <Form.Radio label={mapTitle[4]} checked={map === 'Map5'} value="Map5" onClick={() => setMap('Map5')}/>
+                                        <div className={mapTitle[4]} onClick={handleRemoveConfirm}> {'-----x'} </div>
+                                    </div>
                                 </Form.Group>
 
                                 <div className="saveButtons">

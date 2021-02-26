@@ -13,6 +13,7 @@ const AuthProvider = (props) => {
     const [changeColor, setChangeColor] = useState("#ffff00");
     const [countryColor, setCountryColor] = useState("");
     const [countryEvent, setCountryEvent] = useState([]);
+    const [myImage, setMyImage] = useState(null);
 
     const authContextValue = {
         user, setUser,
@@ -24,6 +25,7 @@ const AuthProvider = (props) => {
         coloredMap, setColoredMap,
         countryText, setCountryText,
         countryEvent, setCountryEvent,
+        myImage, setMyImage
   };
   return <AuthContext.Provider value= {authContextValue} {...props}/>
 };
