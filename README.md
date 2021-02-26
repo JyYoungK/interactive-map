@@ -3,6 +3,7 @@
 `npm i react leaflet react-leaflet bootstrap firebase react-modal`
 `npm i --save react-router-dom`
 `npm i semantic-ui-react`
+`npm install react-image --save`
 `firebase init` -- in order to run this you might need to download firebase tools https://firebase.google.com/docs/cli
 and set Fire Storing / Hostage
 
