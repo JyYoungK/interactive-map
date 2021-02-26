@@ -6,20 +6,9 @@ import './pages.css';
 import { useGlobalState } from "../global-context";
 import Modal from 'react-modal';
 
-function useLatestCb(callback) {
-  const callbackRef = useRef(callback);
-  callbackRef.current = callback;
-
-  const stableCaller = useCallback((...args) => {
-    return callbackRef.current(...args);
-  }, []);
-
-  return stableCaller;
-}
-
 const Map = () => {
 
-  const { myMapTitle, countryData, setCountryData, changeColor, coloredMap, setColoredMap, countryText, setCountryText, countryEvent, setCountryEvent} = useGlobalState();
+  const { myMapTitle, setCountryData, changeColor, coloredMap, setColoredMap, countryText, setCountryText, countryEvent, setCountryEvent} = useGlobalState();
   const [countryModalIsOpen, setCountryModalIsOpen] = useState(false);
   const modalStyle = {
     overlay: {
@@ -54,33 +43,34 @@ const Map = () => {
       zIndex: 1,
   }
 
-  const changeCountryColor = (event)=> {
-    setCountryEvent(event)
-  }
-
   function storeCountryData () {
-    console.log(countryEvent)
-
-    setCountryData(countryData.filter(item => item.ISO === countryEvent.target.feature.properties.ISO_A3)); //Removes the colored country
     countryEvent.target.setStyle({ //Adds color data to be visualized in frontend
           color: "white", //border color
           fillColor: changeColor,
           fillOpacity: 1
     })
     
-    setCountryData([... countryData , { //Adds color/iso data to backend
-      ISO: countryEvent.target.feature.properties.ISO_A3,
-      color: changeColor,
-      name : countryEvent.target.feature.properties.ADMIN,
-      arrayIndex : countryEvent.target.feature.properties.arrayIndex,
-      countryText : countryText,
-    }]);   
+    setCountryData((prevCountryData) => {
+      return prevCountryData
+        .filter(
+          //Removes the countryData with matching ISO
+          (item) => item.ISO !== countryEvent.target.feature.properties.ISO_A3
+        )
+        .concat({
+          //Adds new ISO countryData
+          ISO: countryEvent.target.feature.properties.ISO_A3,
+          color: changeColor,
+          name : countryEvent.target.feature.properties.ADMIN,
+          arrayIndex : countryEvent.target.feature.properties.arrayIndex,
+          countryText : countryText,        
+        });
+    });
   }
 
-  const latestChangeCountryColor = useLatestCb(changeCountryColor);
-  function addCountryData() {
+  const setEvent = (event)=> { 
     setCountryModalIsOpen(true);
-  }
+    setCountryEvent(event)  
+  } ;
 
   const onEachCountry = (country, layer) => {
     layer.options.fillColor = country.properties.color;
@@ -91,12 +81,8 @@ const Map = () => {
     // If you want to make countries have different colors use below-------------------------
     // const colorIndex = Math.floor(Math.random() * this.color.length);
     // layer.options.fillColor = this.color[colorIndex]; // number can go from 0-9
-
     layer.on({ //Clickable function
-          click: addCountryData
-    })
-    layer.on({ //Clickable function
-          click: latestChangeCountryColor
+          click: setEvent
     })
     layer.on('mouseover', function() { layer.openPopup(); }); //Show country names
     layer.on('mouseout', function() { layer.closePopup(); });
