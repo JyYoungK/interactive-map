@@ -2,3 +2,9 @@
     /* ocean color */
     background-color: rgb(81, 203, 224); 
 }
+
+.saveButtons{
+    display: flex;
+    align-items: center;
+    margin: 5px;
+}

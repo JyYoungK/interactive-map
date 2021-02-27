@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapContainer, GeoJSON,} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "./MyMap.css";
@@ -7,10 +7,8 @@ import { useGlobalState } from "../global-context";
 import Modal from 'react-modal';
 import { features } from "../data/countries.json";
 
-
 const Map = () => {
-
-  const { myMapTitle, setCountryData, changeColor, setChangeColor, coloredMap, setColoredMap, countryText, setCountryText, countryEvent, setCountryEvent, setMyImage} = useGlobalState();
+  const { myMapTitle, setCountryData, changeColor, setChangeColor, coloredMap, setColoredMap, countryText, setCountryText, countryEvent, setCountryEvent, myImage } = useGlobalState();
   const [countryModalIsOpen, setCountryModalIsOpen] = useState(false);
   const modalStyle = {
     overlay: {
@@ -18,10 +16,10 @@ const Map = () => {
     },
     content: {
         position: 'absolute',
-        top: '35%',
+        top: '25%',
         left: '30%',
         right: '30%',
-        bottom: '35%',
+        bottom: '25%',
         border: '1px solid #ccc',
         backgroundColor: 'white',
         overflow: 'auto',
@@ -86,7 +84,8 @@ const Map = () => {
           color: changeColor,
           name : countryEvent.target.feature.properties.ADMIN,
           arrayIndex : countryEvent.target.feature.properties.arrayIndex,
-          countryText : countryText,        
+          countryText : countryText,   
+          // image : myImage,     
         });
     });
 
@@ -142,12 +141,6 @@ const Map = () => {
     setCountryModalIsOpen(false);
   }
 
-  const handleChange = e => { //Save function
-    if (e.target.files[0]) {
-      setMyImage(e.target.files[0]);
-    }
-  };
-
   return (
     <div>
           <h1 style ={{textAlign: "center"}}> {myMapTitle} </h1>
@@ -164,14 +157,15 @@ const Map = () => {
                                 <br></br>
                                 {" Select a color to this country "} 
                                 <input type = "color" value = {changeColor} onChange={e => setChangeColor(e.target.value)}></input> 
-
-                                <input type="file" onChange={handleChange} />
-
+                                {/* <br></br>
+                                {" Upload an image "} 
+                                <input type="file" /> */}
+                                <br></br>
                                 <input type="text" placeholder= "Add information here" style={{marginTop: "5%", height: "200%"}} onChange={event => setCountryText(event.target.value)}/>
                                 <div className="saveButtons">
-                                    <button onClick = {saveCountryData}> Save </button> 
-                                    <button onClick= {removeCountryData}> Remove </button>  
-                                    <button onClick = {() => setCountryModalIsOpen(false)}> Close </button>
+                                    <button className="saveButtons" onClick = {saveCountryData}> Save </button> 
+                                    <button className="saveButtons" onClick= {removeCountryData}> Remove </button>  
+                                    <button className="saveButtons" onClick = {() => setCountryModalIsOpen(false)}> Close </button>
                                 </div>
                             </div>
           </Modal>

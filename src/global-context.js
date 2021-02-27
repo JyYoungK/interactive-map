@@ -8,7 +8,6 @@ const AuthProvider = (props) => {
     const [myMapTitle, setMyMapTitle] = useState("");
     const [countryText, setCountryText] = useState("");
     const [countryData, setCountryData] = useState([]);
-    // const [countryColorData, setCountryColorData] = useState([]);
     const [coloredMap, setColoredMap] = useState([]);
     const [changeColor, setChangeColor] = useState("#ffff00");
     const [countryColor, setCountryColor] = useState("");

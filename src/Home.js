@@ -1,18 +1,20 @@
-import React, {useState, useEffect} from "react";
+import React, {useState} from "react";
 import './navComponent/pages.css';
 import './Modal.css';
 import { useGlobalState } from "./global-context";
+// import { Image } from 'react-native';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 import LoadMap from './navComponent/LoadMap';
 import Share from './navComponent/Share';
 import Modal from 'react-modal';
 import { Form } from 'semantic-ui-react';
+// import {storage} from './config/fire';
 
 const Home = (props) => {
     const [map, setMap] = useState('Map1');
     const [listofcountries, setlistofcountries] = useState([]);
     const [dataOfCountries, setDataOfCountries] = useState([]);
-    const {changeColor, setChangeColor,  mapTitle, setMapTitle, setMyMapTitle, countryData} = useGlobalState();
+    const {mapTitle, setMapTitle, setMyMapTitle, countryData} = useGlobalState();
     const {handleLogout, save, preload, load, remove } = props;
     const [saveModalIsOpen, setSaveModalIsOpen] = useState(false);
     const [LoadModalIsOpen, setLoadModalIsOpen] = useState(false);
@@ -59,12 +61,7 @@ const Home = (props) => {
     };
 
     function moreThanOneCountry(){ //Save
-        // if (countryData.length >= 1) {
-            setSaveModalIsOpen(true);
-        // }
-        // else{
-        //     alert("In order to save, something has to be changed in the map!")
-        // }
+        setSaveModalIsOpen(true);
     }
 
     function saved(){
@@ -88,6 +85,7 @@ const Home = (props) => {
             }
             listofcountries.push(countryData[countryData.length-1].name)
             dataOfCountries.push(countryData[countryData.length-1].countryText)
+
             setCompareModalIsOpen(true);
         }
         else{
@@ -133,6 +131,9 @@ const Home = (props) => {
         }
     };
 
+    // const ref = storage.ref("users/User:" + user.uid + "/" + mapTitle);
+    // const url = ref.getDownloadURL();
+
     return (
         <>
             <Router>
@@ -141,14 +142,6 @@ const Home = (props) => {
                     YorkU MyMap
                 </Link>
                 <ul className={'nav-menu active'}>
-                    {/* <li className='nav-item'>
-                        <Link to='/' className='nav-links'>
-                        Home
-                        </Link>
-                    </li> */}
-                    {/* <li className='nav-item'>
-                        <input type = "color" value = {changeColor} onChange={e => setChangeColor(e.target.value)}></input>
-                    </li> */}
                     <li className='nav-item'>
                         <button className='logout nav-links' onClick={moreThanOneCountry}>Save</button>
                         <Modal isOpen={saveModalIsOpen} //Modal open depends on setModal
@@ -219,20 +212,21 @@ const Home = (props) => {
                                 <p>Comparison of the following countries: </p>
                                 <p> {listofcountries} </p>
                                 <p> {dataOfCountries} </p>
+                                {/* <Image source={{ uri: url }}/> */}
                                 <div className="compareButtons">
                                     <button onClick = {closeComparison}> Close </button>
                                 </div>
                             </div>
                         </Modal>
                     </li>
-                    <li className='nav-item'>
+                    {/* <li className='nav-item'>
                         <Link
                         to='/share'
                         className='nav-links'
                         >
                         Share
                         </Link>
-                    </li>
+                    </li> */}
                     <li className='nav-item'>
                         <button className='logout nav-links' onClick={handleLogout}>Logout</button>
                     </li>

@@ -6,9 +6,11 @@ import Home from './Home';
 import firebase from 'firebase';
 import { useGlobalState } from "./global-context";
 import { features } from "./data/countries.json";
+import {storage} from './config/fire';
+
 
 export default function App (){
-  const { user, setUser, mapTitle, setMapTitle, countryData, setColoredMap, setCountryData, myImage} = useGlobalState();
+  const { user, setUser, mapTitle, setMapTitle, countryData, setColoredMap, setCountryData} = useGlobalState();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -76,6 +78,8 @@ export default function App (){
     userExists.once("value")
     .then(function(userinDB){
         for (var i = 0; i < (countryData.length); i++) {
+          storage.ref("users/User:" + user.uid + "/" + mapTitle + "/Images" + i).put(countryData[i].image);
+
           if (userinDB.exists()){ //if a map exists under a username 
             //1. Choose to update 
             firebase.database().ref("users/User:" + user.uid + '/' + mapTitle + '/Obj' + i).update({
@@ -83,7 +87,7 @@ export default function App (){
               CountryColor: countryData[i].color,
               ArrayIndex : countryData[i].arrayIndex,
               CountryText : countryData[i].countryText,
-              Name: countryData[i].name,
+              // Name: countryData[i].name,
             });
           }
           else{ //Create a new map under a username
@@ -92,7 +96,7 @@ export default function App (){
               CountryColor: countryData[i].color,
               ArrayIndex : countryData[i].arrayIndex,
               CountryText : countryData[i].countryText,
-              Name: countryData[i].name,
+              // Name: countryData[i].name,
             });
           }
         }
@@ -172,31 +176,6 @@ export default function App (){
     });
   }
 
-  const uploadImage = (e) => {
-    const uploadTask = database.ref("users/User:" + user.uid + "/" + mapTitle[e]).put(myImage);
-    // uploadTask.on(
-    //   "state_changed",
-    //   snapshot => {
-    //     const progress = Math.round(
-    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-    //     );
-    //     setProgress(progress);
-    //   },
-    //   error => {
-    //     console.log(error);
-    //   },
-    //   () => {
-    //     storage
-    //       .ref("images")
-    //       .child(image.name)
-    //       .getDownloadURL()
-    //       .then(url => {
-    //         setUrl(url);
-    //       });
-    //   }
-    // );
-  }
-
   const remove = (removeTitle) => {
     database.ref("users/User:" + user.uid + "/" + removeTitle).remove();
     console.log("Successfully removed " + removeTitle + "!")
@@ -222,7 +201,7 @@ export default function App (){
   return (
     <div className="App">
       {user ? (
-        <Home handleLogout={handleLogout} save={save} preload = {preload} load={load} remove={remove} uploadImage ={uploadImage}/>
+        <Home handleLogout={handleLogout} save={save} preload = {preload} load={load} remove={remove}/>
       ) : (
         <Login 
           email={email} 
