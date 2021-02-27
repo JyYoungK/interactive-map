@@ -16,6 +16,10 @@ When you see Publish Directory type
 `./build`
 Ready to launch!
 
+### To re deploy netlify, you must
+delete `./build` and `netlify` in your folder. Re install `npm run build` and `netlify deploy --prod`
+
+
 ### How to start. Open Visual Studio cd to my-app and open terminal and type 
 `npm start`
 
