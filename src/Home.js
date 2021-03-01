@@ -87,6 +87,8 @@ const Home = (props) => {
             dataOfCountries.push(countryData[countryData.length-1].countryText)
 
             setCompareModalIsOpen(true);
+            // setlistofcountries([]); //Resets so that it doesn't add up.
+            // setDataOfCountries([]); //Resets so that it doesn't add up.
         }
         else{
             alert("Please select at least 2 countries to compare!")
@@ -152,7 +154,7 @@ const Home = (props) => {
                             <div className="saveContents">
                                 <h2 style={{margin: "5%"}}> Save </h2>
                                 <p>Name of the map </p>
-                                <input type="text" placeholder="Your map name.." style={{marginTop: "5%", height: "200%"}} onChange={event => setMapTitle(event.target.value)}/>
+                                <input type="text" placeholder="Your map name.." style={{marginTop: "5%", height: "200%"}} onBlur={event => setMapTitle(event.target.value)}/>
                                 <div className="saveButtons">
                                     <button onClick={saved}>Save</button>
                                     <button onClick = {() => setSaveModalIsOpen(false)}> Close </button>
@@ -169,7 +171,7 @@ const Home = (props) => {
                         >
                             <div className="saveContents">
                                 <h2 style={{margin: "5%"}}> Load </h2>
-                                <p>Your list of maps </p>
+                                <p>Your list of maps (Maximum 5) </p>
                                 <Form.Group inline>
                                     <div style={{display: 'flex'}}>
                                         <Form.Radio label={mapTitle[0]} checked={map === 'Map1'} value="Map1" onClick={() => setMap('Map1')}/>
@@ -204,7 +206,7 @@ const Home = (props) => {
                     <button className='logout nav-links' onClick={moreThanTwoCountries}>Compare</button>
                         <Modal isOpen={CompareModalIsOpen} //Modal open depends on setModal
                         ariaHideApp={false} //Hides annoying error
-                        onRequestClose={() => setCompareModalIsOpen(false)} //Closes the modal if clicked outside of modal or esc
+                        onRequestClose={closeComparison} //Closes the modal if clicked outside of modal or esc
                         style={ modalStyle2 }
                         >
                             <div className="compareContents">

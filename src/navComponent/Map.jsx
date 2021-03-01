@@ -156,7 +156,7 @@ const Map = () => {
                                 <h2>Add information to the map </h2>
                                 <br></br>
                                 {" Select a color to this country "} 
-                                <input type = "color" value = {changeColor} onChange={e => setChangeColor(e.target.value)}></input> 
+                                <input type = "color" value = {changeColor} onBlur={e => setChangeColor(e.target.value)}></input> 
                                 {/* <br></br>
                                 {" Upload an image "} 
                                 <input type="file" /> */}

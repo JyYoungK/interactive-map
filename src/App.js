@@ -78,7 +78,7 @@ export default function App (){
     userExists.once("value")
     .then(function(userinDB){
         for (var i = 0; i < (countryData.length); i++) {
-          storage.ref("users/User:" + user.uid + "/" + mapTitle + "/Images" + i).put(countryData[i].image);
+          // storage.ref("users/User:" + user.uid + "/" + mapTitle + "/Images" + i).put(countryData[i].image);
 
           if (userinDB.exists()){ //if a map exists under a username 
             //1. Choose to update 
@@ -87,7 +87,7 @@ export default function App (){
               CountryColor: countryData[i].color,
               ArrayIndex : countryData[i].arrayIndex,
               CountryText : countryData[i].countryText,
-              // Name: countryData[i].name,
+              Name: countryData[i].name,
             });
           }
           else{ //Create a new map under a username
@@ -96,7 +96,7 @@ export default function App (){
               CountryColor: countryData[i].color,
               ArrayIndex : countryData[i].arrayIndex,
               CountryText : countryData[i].countryText,
-              // Name: countryData[i].name,
+              Name: countryData[i].name,
             });
           }
         }
